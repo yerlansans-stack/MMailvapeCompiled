@@ -1,3 +1,4 @@
+print("[MMail] 856 redirect started")
 local vape = shared.vape
 local loadstring = function(...)
 	local res, err = loadstring(...)
@@ -30,6 +31,7 @@ end
 
 vape.Place = 6872274481
 if isfile('newvape/games/'..vape.Place..'.lua') then
+	print("[MMail] loading place:", vape.Place)
 	loadstring(readfile('newvape/games/'..vape.Place..'.lua'), 'bedwars')()
 else
 	if not shared.VapeDeveloper then
