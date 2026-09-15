@@ -643,15 +643,18 @@ end)
 entitylib.start()
 
 run(function()
+	print("[MMail] 687 started")
 	local KnitInit, Knit
 	repeat
 		KnitInit, Knit = pcall(function()
 			return debug.getupvalue(require(lplr.PlayerScripts.TS.knit).setup, 9)
 		end)
+
+		print("[MMail] Knit check:", KnitInit, Knit)
 		if KnitInit then break end
 		task.wait()
 	until KnitInit
-
+	print("[MMail] Knit loaded")
 	if not debug.getupvalue(Knit.Start, 1) then
 		repeat task.wait() until debug.getupvalue(Knit.Start, 1)
 	end
