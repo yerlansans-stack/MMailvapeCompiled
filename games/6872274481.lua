@@ -644,20 +644,50 @@ entitylib.start()
 
 run(function()
 	print("[MMail] 687 started")
-	local KnitInit, Knit
-	repeat
-		KnitInit, Knit = pcall(function()
-			return debug.getupvalue(require(lplr.PlayerScripts.TS.knit).setup, 9)
-		end)
 
-		print("[MMail] Knit check:", KnitInit, Knit)
-		if KnitInit then break end
-		task.wait()
-	until KnitInit
-	print("[MMail] Knit loaded")
-	if not debug.getupvalue(Knit.Start, 1) then
-		repeat task.wait() until debug.getupvalue(Knit.Start, 1)
+	local knitModule = lplr.PlayerScripts
+		:WaitForChild("TS", 10)
+		:WaitForChild("knit", 10)
+
+	if not knitModule then
+		warn("[MMail] TS.knit not found")
+		return
 	end
+
+	print("[MMail] Found:", knitModule:GetFullName())
+
+	task.wait(3)
+
+	local ok, knitResult = pcall(require, knitModule)
+
+	print("[MMail] require knit:", ok, knitResult)
+
+	if not ok then
+		warn("[MMail] TS.knit failed to require")
+		return
+	end
+
+	if type(knitResult) ~= "table" or type(knitResult.setup) ~= "function" then
+		warn("[MMail] knit module structure changed")
+		return
+	end
+
+	local upvalueOk, Knit = pcall(function()
+		return debug.getupvalue(knitResult.setup, 9)
+	end)
+
+	print("[MMail] old Knit lookup:", upvalueOk, Knit)
+
+	if not upvalueOk or not Knit then
+		warn("[MMail] Old Knit lookup no longer matches the current game")
+		return
+	end
+
+	print("[MMail] Knit loaded")
+
+	local Flamework = require(replicatedStorage['rbxts_include']['node_modules']['@flamework'].core.out).Flamework
+	-- rest of your existing code...
+
 
 	local Flamework = require(replicatedStorage['rbxts_include']['node_modules']['@flamework'].core.out).Flamework
 	local InventoryUtil = require(replicatedStorage.TS.inventory['inventory-util']).InventoryUtil
